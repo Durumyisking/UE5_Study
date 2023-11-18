@@ -75,3 +75,4 @@ DerivedDataCache/*
 
 # asset
 *.uasset
+!Content/MyContents/**
