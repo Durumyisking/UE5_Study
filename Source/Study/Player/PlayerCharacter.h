@@ -12,7 +12,7 @@ class STUDY_API APlayerCharacter : public ACharacter
 	GENERATED_BODY()
 
 	//UENUM(BlueprintType)
-	enum class PlayerState : uint8
+	enum class EPlayerState : uint8
 	{
 		Idle,
 		Move,
@@ -36,8 +36,17 @@ protected:
 	class UInputMappingContext* mInputMappingContext;
 
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
+	class UInputAction* mAction_Idle;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category ="Enhanced Input", meta = (AllowPrivateAccess = "true"))
-	class UInputAction* mAction_Move;
+	class UInputAction* mAction_MoveFoward;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
+	class UInputAction* mAction_MoveBack;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
+	class UInputAction* mAction_MoveSide;
+
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
 	class UInputAction* mAction_Jump;
@@ -62,17 +71,36 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	// Actions
-	void Move(const struct FInputActionValue& value);
+	void BindActions(UInputComponent* PlayerInputComponent);
+
+	void Idle(const struct FInputActionValue& value);
+
+	void MoveFoward(const struct FInputActionValue& value);
+	void MoveBack(const struct FInputActionValue& value);
+	void MoveSide(const struct FInputActionValue& value);
+
 	void Run(const FInputActionValue& value);
 	void Rotate(const FInputActionValue& value);
 
-	bool GetPlayerState(PlayerState state) const { return mState[static_cast<UINT>(state)]; }
-	void SetPlayerState(PlayerState state, bool value) { mState[static_cast<UINT>(state)] = value; }
-	void SetPlayerSingleState(PlayerState state);
+	bool GetPlayerState(EPlayerState state) const { return mState[static_cast<UINT>(state)]; }
+	void SetPlayerState(EPlayerState state, bool value) { mState[static_cast<UINT>(state)] = value; }
+	void SetPlayerSingleState(EPlayerState state);
+
+	bool GetDirState(EMoveDir dir) const { return mMoveDir[static_cast<UINT>(dir)]; }
+	void SetDirState(EMoveDir dir, bool value) { mMoveDir[static_cast<UINT>(dir)] = value; }
+
+
+	// state Log
+	void PrintLogByState();
+	void PrintLogByMoveDir();
+
 
 private:
-	float mMovementSpeed;
+	float mMoveFowardSpeed;
+	float mMoveBackSpeed;
+	float mMoveSideSpeed;
 
-	std::bitset< static_cast<UINT>(PlayerState::End)> mState;
+	std::bitset< static_cast<UINT>(EPlayerState::End)> mState;
+	std::bitset< static_cast<UINT>(EMoveDir::End)> mMoveDir;
 
 };

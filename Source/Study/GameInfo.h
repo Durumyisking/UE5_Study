@@ -27,3 +27,16 @@ public:
 	GameInfo();
 	~GameInfo();
 };
+
+
+
+// enums
+
+enum class EMoveDir : uint8
+{
+	W,
+	S,
+	A,
+	D,
+	End,
+};
