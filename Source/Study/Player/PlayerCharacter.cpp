@@ -176,19 +176,19 @@ void APlayerCharacter::MoveSide(const FInputActionValue& value)
 		if (side > 0.f)
 		{
 			mMoveDir[static_cast<UINT>(EMoveDir::D)] = true;
-			mMoveDir[static_cast<UINT>(EMoveDir::S)] = false;
+			mMoveDir[static_cast<UINT>(EMoveDir::A)] = false;
 		}
 		else
 		{
 			mMoveDir[static_cast<UINT>(EMoveDir::S)] = true;
-			mMoveDir[static_cast<UINT>(EMoveDir::D)] = false;
+			mMoveDir[static_cast<UINT>(EMoveDir::A)] = false;
 		}
 	}
 	else
 	{
 		mState[static_cast<UINT>(EPlayerState::Move)] = false;
 		mMoveDir[static_cast<UINT>(EMoveDir::D)] = false;
-		mMoveDir[static_cast<UINT>(EMoveDir::S)] = false;
+		mMoveDir[static_cast<UINT>(EMoveDir::A)] = false;
 	}
 	
 }
