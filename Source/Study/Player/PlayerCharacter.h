@@ -11,6 +11,16 @@ class STUDY_API APlayerCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
+	//UENUM(BlueprintType)
+	enum class PlayerState : uint8
+	{
+		Idle,
+		Move,
+		Jump,
+		Run,
+		End,
+	};
+
 public:
 	// Sets default values for this character's properties
 	APlayerCharacter();
@@ -29,6 +39,13 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category ="Enhanced Input", meta = (AllowPrivateAccess = "true"))
 	class UInputAction* mAction_Move;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
+	class UInputAction* mAction_Jump;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
+	class UInputAction* mAction_Run;
+
+
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -42,5 +59,15 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	void Move(const struct FInputActionValue& value);
+	void Run(const FInputActionValue& value);
+
+	bool GetPlayerState(PlayerState state) const { return mState[static_cast<UINT>(state)]; }
+	void SetPlayerState(PlayerState state, bool value) { mState[static_cast<UINT>(state)] = value; }
+	void SetPlayerSingleState(PlayerState state);
+
+private:
+	float mMovementSpeed;
+
+	std::bitset< static_cast<UINT>(PlayerState::End)> mState;
 
 };

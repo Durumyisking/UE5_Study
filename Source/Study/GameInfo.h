@@ -4,6 +4,7 @@
 
 #include "EngineMinimal.h"
 
+#include <bitset>
 
 #define UPROPERTY_EDITANY_BPRW_APC_TRUE	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 

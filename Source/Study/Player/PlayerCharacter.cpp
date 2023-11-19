@@ -13,13 +13,16 @@ APlayerCharacter::APlayerCharacter()
 	, mSpringArm(nullptr)
 	, mInputMappingContext(nullptr)
 	, mAction_Move(nullptr)
+	, mAction_Jump(nullptr)
+	, mAction_Run(nullptr)
+	, mMovementSpeed(1.f)
+	, mState{}
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	mCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	mSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Arm"));
-
 
 	mCamera->SetupAttachment(mSpringArm);
 
@@ -30,6 +33,21 @@ APlayerCharacter::APlayerCharacter()
 // Called when the game starts or when spawned
 void APlayerCharacter::BeginPlay()
 {
+	// 플레이어 컨트롤러 획득
+	auto playerController = Cast<APlayerController>(GetController());
+
+	if (nullptr != playerController)
+	{
+		// LocalPlayer의 향상된입력 얻기
+		auto eiSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(playerController->GetLocalPlayer());
+		// Add the input mapping context
+
+		if (nullptr != eiSubsystem)
+		{
+			eiSubsystem->AddMappingContext(mInputMappingContext, 0);
+		}
+	}
+
 	Super::BeginPlay();
 
 }
@@ -46,30 +64,63 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	// Get the player controller
-	auto playerController = Cast<APlayerController>(GetController());
-
-	// Get the local player enhanced input subsystem
-	auto eiSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(playerController->GetLocalPlayer());
-	//Add the input mapping context
-	eiSubsystem->AddMappingContext(mInputMappingContext, 0);
-
 	// Get the EnhancedInputComponent
 	auto playerEIcomponent = Cast<UEnhancedInputComponent>(PlayerInputComponent);
 
-	//Bind Move() to the mapping
-	//BindAction for enhanced system takes Action, ETriggerEvent, object, and function
-	//ETriggerEvent is an enum, where Triggered means "button is held down".
-	playerEIcomponent->BindAction(mAction_Move, ETriggerEvent::Triggered, this, &APlayerCharacter::Move);
+
+	if (nullptr != playerEIcomponent)
+	{
+		//Bind Move() to the mapping
+		//BindAction for enhanced system takes Action, ETriggerEvent, object, and function
+		//ETriggerEvent is an enum, where Triggered means "button is held down".
+		playerEIcomponent->BindAction(mAction_Move, ETriggerEvent::Triggered, this, &APlayerCharacter::Move);
+		playerEIcomponent->BindAction(mAction_Jump, ETriggerEvent::Triggered, this, &APlayerCharacter::Jump);
+		playerEIcomponent->BindAction(mAction_Run, ETriggerEvent::Triggered, this, &APlayerCharacter::Run);
+
+	}
 }
 
 void APlayerCharacter::Move(const FInputActionValue& value)
 {
+	auto playerController = Cast<APlayerController>(GetController());
 	const FVector3d moveVector = value.Get<FVector3d>();
 
-	AddMovementInput({ 1.f, 0.f, 0.f }, 10.f);
+	if (nullptr != playerController)
+	{
+		mState[static_cast<UINT>(PlayerState::Move)] = true;
 
-	UE_LOG(LogTemp, Warning, TEXT("Test log"));
+		const FRotator rotation = Controller->GetControlRotation();
+		const FRotator yaw(0.f, rotation.Yaw, 0.f);
+		const FVector fowardDirection = FRotationMatrix(yaw).GetUnitAxis(EAxis::X);
+		const FVector rightDirection = FRotationMatrix(yaw).GetUnitAxis(EAxis::Y);
 
+
+		AddMovementInput(fowardDirection, moveVector.X * mMovementSpeed);
+		AddMovementInput(rightDirection, moveVector.Y );
+	}
+
+
+}
+
+void APlayerCharacter::Run(const FInputActionValue& value)
+{
+	const bool input = value.Get<bool>();
+
+	if (input)
+	{
+		mMovementSpeed = 10.5f;
+		mState[static_cast<UINT>(PlayerState::Run)] = true;
+	}
+	else
+	{
+		mMovementSpeed = 1.f;
+		mState[static_cast<UINT>(PlayerState::Run)] = false;
+	}
+}
+
+void APlayerCharacter::SetPlayerSingleState(PlayerState state)
+{
+	mState.reset();
+	mState[static_cast<UINT>(state)] = true;
 }
 
