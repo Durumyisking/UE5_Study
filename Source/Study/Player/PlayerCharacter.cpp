@@ -15,19 +15,29 @@ APlayerCharacter::APlayerCharacter()
 	, mAction_Move(nullptr)
 	, mAction_Jump(nullptr)
 	, mAction_Run(nullptr)
-	, mMovementSpeed(1.f)
+	, mAction_Rotate(nullptr)
+	, mMovementSpeed(0.5f)
 	, mState{}
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	mCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	mSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Arm"));
+	mCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 
+	mSpringArm->SetupAttachment(RootComponent);
 	mCamera->SetupAttachment(mSpringArm);
 
 	mSpringArm->TargetArmLength = 500.f;
 	mSpringArm->TargetOffset = { 0.f, 0.f, 100.f };
+
+	auto movementComponent = Cast< UCharacterMovementComponent>(GetCharacterMovement());
+	if (movementComponent)
+	{
+		movementComponent->MaxWalkSpeed = 300.f;
+		movementComponent->GroundFriction = 16.f;
+	}
+
 }
 
 // Called when the game starts or when spawned
@@ -74,31 +84,31 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		//BindAction for enhanced system takes Action, ETriggerEvent, object, and function
 		//ETriggerEvent is an enum, where Triggered means "button is held down".
 		playerEIcomponent->BindAction(mAction_Move, ETriggerEvent::Triggered, this, &APlayerCharacter::Move);
+		playerEIcomponent->BindAction(mAction_Move, ETriggerEvent::Completed, this, &APlayerCharacter::Move);
 		playerEIcomponent->BindAction(mAction_Jump, ETriggerEvent::Triggered, this, &APlayerCharacter::Jump);
 		playerEIcomponent->BindAction(mAction_Run, ETriggerEvent::Triggered, this, &APlayerCharacter::Run);
+		playerEIcomponent->BindAction(mAction_Run, ETriggerEvent::Completed, this, &APlayerCharacter::Run);
+		playerEIcomponent->BindAction(mAction_Rotate, ETriggerEvent::Triggered, this, &APlayerCharacter::Rotate);
 
 	}
 }
 
 void APlayerCharacter::Move(const FInputActionValue& value)
 {
-	auto playerController = Cast<APlayerController>(GetController());
-	const FVector3d moveVector = value.Get<FVector3d>();
+	FVector3d moveVector = value.Get<FVector3d>();
+	moveVector.Normalize();
 
-	if (nullptr != playerController)
+	if (moveVector.IsZero())
 	{
-		mState[static_cast<UINT>(PlayerState::Move)] = true;
-
-		const FRotator rotation = Controller->GetControlRotation();
-		const FRotator yaw(0.f, rotation.Yaw, 0.f);
-		const FVector fowardDirection = FRotationMatrix(yaw).GetUnitAxis(EAxis::X);
-		const FVector rightDirection = FRotationMatrix(yaw).GetUnitAxis(EAxis::Y);
-
-
-		AddMovementInput(fowardDirection, moveVector.X * mMovementSpeed);
-		AddMovementInput(rightDirection, moveVector.Y );
+		mState[static_cast<UINT>(PlayerState::Move)] = false;
 	}
 
+	mState[static_cast<UINT>(PlayerState::Move)] = true;
+
+	PrintViewport(1.f, FColor::Red, moveVector.ToString());
+
+	AddMovementInput(GetActorForwardVector(), moveVector.X * mMovementSpeed);
+	AddMovementInput(GetActorRightVector(), moveVector.Y * (1.5f - mMovementSpeed));
 
 }
 
@@ -108,14 +118,18 @@ void APlayerCharacter::Run(const FInputActionValue& value)
 
 	if (input)
 	{
-		mMovementSpeed = 10.5f;
 		mState[static_cast<UINT>(PlayerState::Run)] = true;
+		mMovementSpeed = 1.f;
 	}
 	else
 	{
-		mMovementSpeed = 1.f;
 		mState[static_cast<UINT>(PlayerState::Run)] = false;
+		mMovementSpeed = 0.5f;
 	}
+}
+
+void APlayerCharacter::Rotate(const FInputActionValue& value)
+{
 }
 
 void APlayerCharacter::SetPlayerSingleState(PlayerState state)

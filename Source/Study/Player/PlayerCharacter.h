@@ -45,6 +45,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
 	class UInputAction* mAction_Run;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
+	class UInputAction* mAction_Rotate;
+
 
 
 	// Called when the game starts or when spawned
@@ -58,8 +61,10 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	// Actions
 	void Move(const struct FInputActionValue& value);
 	void Run(const FInputActionValue& value);
+	void Rotate(const FInputActionValue& value);
 
 	bool GetPlayerState(PlayerState state) const { return mState[static_cast<UINT>(state)]; }
 	void SetPlayerState(PlayerState state, bool value) { mState[static_cast<UINT>(state)] = value; }
