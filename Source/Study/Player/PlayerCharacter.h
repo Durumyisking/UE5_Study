@@ -48,6 +48,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
 	class UInputAction* mAction_Rotate;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
+	class UInputAction* mAction_Shoot;
 
 
 	// Called when the game starts or when spawned
@@ -73,6 +75,8 @@ public:
 	void Run(const FInputActionValue& value);
 	void Rotate(const FInputActionValue& value);
 
+	void Shoot(const FInputActionValue& value);
+
 	bool GetPlayerState(EPlayerState state) const { return mState[static_cast<UINT>(state)]; }
 	void SetPlayerState(EPlayerState state, bool value) { mState[static_cast<UINT>(state)] = value; }
 	void SetPlayerSingleState(EPlayerState state);
@@ -85,6 +89,7 @@ public:
 	void PrintLogByState();
 	void PrintLogByMoveDir();
 
+	bool IsShooting() const { return mState[static_cast<UINT>(EPlayerAnimState::Shoot)]; }
 
 private:
 	float mMoveForwardSpeed;

@@ -18,6 +18,7 @@ APlayerCharacter::APlayerCharacter()
 	, mAction_Jump(nullptr)
 	, mAction_Run(nullptr)
 	, mAction_Rotate(nullptr)
+	, mAction_Shoot(nullptr)
 	, mMoveForwardSpeed(0.5f)
 	, mMoveBackSpeed(0.25f)
 	, mMoveSideSpeed(0.5f)
@@ -30,11 +31,10 @@ APlayerCharacter::APlayerCharacter()
 	mSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Arm"));
 	mCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 
-	mSpringArm->SetupAttachment(RootComponent);
-	mCamera->SetupAttachment(mSpringArm);
-
-	mSpringArm->TargetArmLength = 500.f;
-	mSpringArm->TargetOffset = { 0.f, 0.f, 100.f };
+	mSpringArm->SetupAttachment(GetRootComponent());
+	mCamera->SetupAttachment(mSpringArm, USpringArmComponent::SocketName);
+	mSpringArm->TargetArmLength = 100.f;
+	mSpringArm->TargetOffset = { 0.f, -20.f, 125.f };
 
 	auto movementComponent = Cast< UCharacterMovementComponent>(GetCharacterMovement());
 	if (movementComponent)
@@ -49,6 +49,7 @@ APlayerCharacter::APlayerCharacter()
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	mCamera->AddRelativeRotation({ -25.f, 0.f, 0.f });
 
 	// ÇÃ·¹ÀÌ¾î ÄÁÆ®·Ñ·¯ È¹µæ
 	auto playerController = Cast<APlayerController>(GetController());
@@ -113,6 +114,8 @@ void APlayerCharacter::BindActions(UInputComponent* PlayerInputComponent)
 
 		playerEIcomponent->BindAction(mAction_Rotate, ETriggerEvent::Triggered, this, &APlayerCharacter::Rotate);
 
+		playerEIcomponent->BindAction(mAction_Shoot, ETriggerEvent::Triggered, this, &APlayerCharacter::Shoot);
+		playerEIcomponent->BindAction(mAction_Shoot, ETriggerEvent::Completed, this, &APlayerCharacter::Shoot);
 	}
 
 }
@@ -216,11 +219,38 @@ void APlayerCharacter::Run(const FInputActionValue& value)
 	{
 		mState[static_cast<UINT>(EPlayerState::Run)] = false;
 		mMoveForwardSpeed = 0.5f;
+		mMoveSideSpeed = 0.5f;
 	}
 }
 
 void APlayerCharacter::Rotate(const FInputActionValue& value)
 {
+	FVector3d vec = value.Get<FVector3d>();
+
+	FRotator rot(vec.Y, vec.X, 0.f);
+	AddActorLocalRotation(rot);
+	rot.Yaw = 0.f;
+	mSpringArm->AddLocalRotation(rot);
+
+}
+
+void APlayerCharacter::Shoot(const FInputActionValue& value)
+{
+	const bool input = value.Get<bool>();
+
+	if (input)
+	{
+		if(!mState[static_cast<UINT>(EPlayerState::Run)])
+		{
+			mState[static_cast<UINT>(EPlayerState::Idle)] = false;
+			mState[static_cast<UINT>(EPlayerState::Shoot)] = true;
+		}
+	}
+	else
+	{
+		mState[static_cast<UINT>(EPlayerState::Shoot)] = false;
+	}
+
 }
 
 void APlayerCharacter::SetPlayerSingleState(EPlayerState state)
@@ -242,6 +272,10 @@ void APlayerCharacter::PrintLogByState()
 	if (mState[static_cast<UINT>(EPlayerState::Run)])
 	{
 		PrintViewport(0.5f, FColor::Red, "State : Run");
+	}
+	if (mState[static_cast<UINT>(EPlayerState::Shoot)])
+	{
+		PrintViewport(0.5f, FColor::Red, "State : Shoot");
 	}
 }
 

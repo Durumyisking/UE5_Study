@@ -5,7 +5,8 @@
 #include "PlayerCharacter.h"
 
 UPlayerAnimInstance::UPlayerAnimInstance()
-	: mAnimState(EPlayerAnimState::End)
+	: mPlayer(nullptr)
+	, mAnimState(EPlayerAnimState::End)
 	, mMoveDir(EMoveDir::End)
 {
 }
@@ -13,12 +14,23 @@ UPlayerAnimInstance::UPlayerAnimInstance()
 void UPlayerAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
+
+	// TryGetPawnOwner : 이 AnimInstance를 가지고 있는 메쉬의 Pawn을 얻어온다.
+	// Player를 얻는다
+	mPlayer = Cast<APlayerCharacter>(TryGetPawnOwner());
 }
 
 void UPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
 
+	PrintLogByState();
+	PlayerAnimStateOperate();
+	
+}
+
+void UPlayerAnimInstance::PrintLogByState()
+{
 	switch (mAnimState)
 	{
 	case EPlayerAnimState::Idle:
@@ -32,53 +44,77 @@ void UPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	case EPlayerAnimState::Run:
 		PrintViewport(0.5f, FColor::Blue, "AnimState : Run");
 		break;
+	case EPlayerAnimState::Shoot:
+		PrintViewport(0.5f, FColor::Blue, "AnimState : Run");
+		break;
 	case EPlayerAnimState::End:
 		break;
 	default:
 		break;
 	}
+}
 
-	// TryGetPawnOwner : 이 AnimInstance를 가지고 있는 메쉬의 Pawn을 얻어온다.
-	// Player를 얻는다
-	APlayerCharacter* player = Cast<APlayerCharacter>(TryGetPawnOwner());
+void UPlayerAnimInstance::PlayerAnimStateOperate()
+{
 
-	if (IsValid(player))
+	if (IsValid(mPlayer))
 	{
 		// 플레이어 상태에 따라서 애니메이션 바꿔주자
 
-		if (player->GetPlayerState(EPlayerState::Idle))
+		if (mPlayer->GetPlayerState(EPlayerState::Idle))
 		{
 			mAnimState = EPlayerAnimState::Idle;
 		}
-		else if (player->GetPlayerState(EPlayerState::Move))
+		else if (mPlayer->GetPlayerState(EPlayerState::Move))
 		{
 			mAnimState = EPlayerAnimState::Move;
-			if (player->GetMoveDir(EMoveDir::W))
+			if (mPlayer->GetMoveDir(EMoveDir::W))
 			{
 				mMoveDir = EMoveDir::W;
 			}
 			else
 			{
-				if (player->GetMoveDir(EMoveDir::A))
+				if (mPlayer->GetMoveDir(EMoveDir::A))
 				{
 					mMoveDir = EMoveDir::A;
 				}
-				else if (player->GetMoveDir(EMoveDir::D))
+				else if (mPlayer->GetMoveDir(EMoveDir::D))
 				{
 					mMoveDir = EMoveDir::D;
 				}
 
-				if (player->GetMoveDir(EMoveDir::S))
+				if (mPlayer->GetMoveDir(EMoveDir::S))
 				{
 					mMoveDir = EMoveDir::S;
 				}
 			}
 
-			if (player->GetPlayerState(EPlayerState::Run))
+			if (mPlayer->GetPlayerState(EPlayerState::Run))
 			{
 				mAnimState = EPlayerAnimState::Run;
 			}
+			else if (mPlayer->GetPlayerState(EPlayerState::Shoot))
+			{
+				mAnimState = EPlayerAnimState::Shoot;
+			}
 		}
+		else if (mPlayer->GetPlayerState(EPlayerState::Shoot))
+		{
+			mAnimState = EPlayerAnimState::Shoot;
+		}
+
+	}
+}
+
+void UPlayerAnimInstance::AnimNotify_CreateBullet()
+{
+
+}
+
+void UPlayerAnimInstance::AnimNotify_ShootLoop()
+{
+	if (mPlayer->IsShooting())
+	{
 
 	}
 }

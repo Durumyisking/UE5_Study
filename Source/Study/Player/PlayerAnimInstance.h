@@ -24,7 +24,19 @@ public:
 	EPlayerAnimState GetAnimState() const { return mAnimState; }
 	EMoveDir GetMoveDir() const { return mMoveDir; }
 
+	void PrintLogByState();
+	void PlayerAnimStateOperate();
+
+	// notifies
+
+	UFUNCTION()
+	void AnimNotify_CreateBullet();
+	UFUNCTION()
+	void AnimNotify_ShootLoop();
+
 private:
+	class APlayerCharacter* mPlayer;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	EPlayerAnimState mAnimState;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
