@@ -11,15 +11,6 @@ class STUDY_API APlayerCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
-	//UENUM(BlueprintType)
-	enum class EPlayerState : uint8
-	{
-		Idle,
-		Move,
-		Jump,
-		Run,
-		End,
-	};
 
 public:
 	// Sets default values for this character's properties
@@ -40,7 +31,7 @@ protected:
 	class UInputAction* mAction_Idle;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category ="Enhanced Input", meta = (AllowPrivateAccess = "true"))
-	class UInputAction* mAction_MoveFoward;
+	class UInputAction* mAction_MoveForward;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
 	class UInputAction* mAction_MoveBack;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
@@ -75,7 +66,7 @@ public:
 
 	void Idle(const struct FInputActionValue& value);
 
-	void MoveFoward(const struct FInputActionValue& value);
+	void MoveForward(const struct FInputActionValue& value);
 	void MoveBack(const struct FInputActionValue& value);
 	void MoveSide(const struct FInputActionValue& value);
 
@@ -86,8 +77,8 @@ public:
 	void SetPlayerState(EPlayerState state, bool value) { mState[static_cast<UINT>(state)] = value; }
 	void SetPlayerSingleState(EPlayerState state);
 
-	bool GetDirState(EMoveDir dir) const { return mMoveDir[static_cast<UINT>(dir)]; }
-	void SetDirState(EMoveDir dir, bool value) { mMoveDir[static_cast<UINT>(dir)] = value; }
+	bool GetMoveDir(EMoveDir dir) const { return mMoveDir[static_cast<UINT>(dir)]; }
+	void SetMoveDir(EMoveDir dir, bool value) { mMoveDir[static_cast<UINT>(dir)] = value; }
 
 
 	// state Log
@@ -96,7 +87,7 @@ public:
 
 
 private:
-	float mMoveFowardSpeed;
+	float mMoveForwardSpeed;
 	float mMoveBackSpeed;
 	float mMoveSideSpeed;
 

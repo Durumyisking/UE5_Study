@@ -12,13 +12,13 @@ APlayerCharacter::APlayerCharacter()
 	: mCamera(nullptr)
 	, mSpringArm(nullptr)
 	, mInputMappingContext(nullptr)
-	, mAction_MoveFoward(nullptr)
+	, mAction_MoveForward(nullptr)
 	, mAction_MoveBack(nullptr)
 	, mAction_MoveSide(nullptr)
 	, mAction_Jump(nullptr)
 	, mAction_Run(nullptr)
 	, mAction_Rotate(nullptr)
-	, mMoveFowardSpeed(0.5f)
+	, mMoveForwardSpeed(0.5f)
 	, mMoveBackSpeed(0.25f)
 	, mMoveSideSpeed(0.5f)
 	, mState{}
@@ -53,7 +53,7 @@ void APlayerCharacter::BeginPlay()
 	// 플레이어 컨트롤러 획득
 	auto playerController = Cast<APlayerController>(GetController());
 
-	if (nullptr != playerController)
+	if (IsValid(playerController))
 	{
 		// LocalPlayer의 향상된입력 얻기
 		auto eiSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(playerController->GetLocalPlayer());
@@ -97,8 +97,8 @@ void APlayerCharacter::BindActions(UInputComponent* PlayerInputComponent)
 		//ETriggerEvent is an enum, where Triggered means "button is held down".
 		playerEIcomponent->BindAction(mAction_Idle, ETriggerEvent::None, this, &APlayerCharacter::Idle);
 
-		playerEIcomponent->BindAction(mAction_MoveFoward, ETriggerEvent::Triggered, this, &APlayerCharacter::MoveFoward);
-		playerEIcomponent->BindAction(mAction_MoveFoward, ETriggerEvent::Completed, this, &APlayerCharacter::MoveFoward);
+		playerEIcomponent->BindAction(mAction_MoveForward, ETriggerEvent::Triggered, this, &APlayerCharacter::MoveForward);
+		playerEIcomponent->BindAction(mAction_MoveForward, ETriggerEvent::Completed, this, &APlayerCharacter::MoveForward);
 
 		playerEIcomponent->BindAction(mAction_MoveBack, ETriggerEvent::Triggered, this, &APlayerCharacter::MoveBack);
 		playerEIcomponent->BindAction(mAction_MoveBack, ETriggerEvent::Completed, this, &APlayerCharacter::MoveBack);
@@ -125,13 +125,13 @@ void APlayerCharacter::Idle(const FInputActionValue& value)
 	}
 }
 
-void APlayerCharacter::MoveFoward(const FInputActionValue& value)
+void APlayerCharacter::MoveForward(const FInputActionValue& value)
 {
 	const bool input = value.Get<bool>();
 
 	if (input)
 	{
-		AddMovementInput(GetActorForwardVector(), mMoveFowardSpeed);
+		AddMovementInput(GetActorForwardVector(), mMoveForwardSpeed);
 		mState[static_cast<UINT>(EPlayerState::Idle)] = false;
 		mState[static_cast<UINT>(EPlayerState::Move)] = true;
 		mMoveDir[static_cast<UINT>(EMoveDir::W)] = true;
@@ -180,8 +180,8 @@ void APlayerCharacter::MoveSide(const FInputActionValue& value)
 		}
 		else
 		{
-			mMoveDir[static_cast<UINT>(EMoveDir::S)] = true;
-			mMoveDir[static_cast<UINT>(EMoveDir::A)] = false;
+			mMoveDir[static_cast<UINT>(EMoveDir::A)] = true;
+			mMoveDir[static_cast<UINT>(EMoveDir::D)] = false;
 		}
 	}
 	else
@@ -202,20 +202,20 @@ void APlayerCharacter::Run(const FInputActionValue& value)
 		if (mMoveDir[static_cast<UINT>(EMoveDir::W)])
 		{
 			mState[static_cast<UINT>(EPlayerState::Run)] = true;
-			mMoveFowardSpeed = 1.f;
+			mMoveForwardSpeed = 1.f;
 			mMoveSideSpeed = 0.25f;
 		}
 		else
 		{
 			mState[static_cast<UINT>(EPlayerState::Run)] = false;
-			mMoveFowardSpeed = 0.5f;
+			mMoveForwardSpeed = 0.5f;
 			mMoveSideSpeed = 0.5f;
 		}
 	}
 	else
 	{
 		mState[static_cast<UINT>(EPlayerState::Run)] = false;
-		mMoveFowardSpeed = 0.5f;
+		mMoveForwardSpeed = 0.5f;
 	}
 }
 

@@ -31,7 +31,26 @@ public:
 
 
 // enums
+UENUM(BlueprintType)
+enum class EPlayerState : uint8
+{
+	Idle,
+	Move,
+	Jump,
+	Run,
+	End,
+};
+UENUM(BlueprintType)
+enum class EPlayerAnimState : uint8
+{
+	Idle,
+	Move,
+	Jump,
+	Run,
+	End,
+};
 
+UENUM(BlueprintType)
 enum class EMoveDir : uint8
 {
 	W,

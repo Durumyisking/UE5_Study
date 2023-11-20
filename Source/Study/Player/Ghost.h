@@ -12,5 +12,8 @@ UCLASS()
 class STUDY_API AGhost : public APlayerCharacter
 {
 	GENERATED_BODY()
-	
+public:
+	// Sets default values for this character's properties
+	AGhost();
+
 };
