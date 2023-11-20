@@ -31,25 +31,34 @@ protected:
 	class UInputAction* mAction_Idle;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category ="Enhanced Input", meta = (AllowPrivateAccess = "true"))
-	class UInputAction* mAction_MoveForward;
+	UInputAction* mAction_MoveForward;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
-	class UInputAction* mAction_MoveBack;
+	UInputAction* mAction_MoveBack;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
-	class UInputAction* mAction_MoveSide;
+	UInputAction* mAction_MoveSide;
 
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
-	class UInputAction* mAction_Jump;
+	UInputAction* mAction_Jump;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
-	class UInputAction* mAction_Run;
+	UInputAction* mAction_Run;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
-	class UInputAction* mAction_Rotate;
+	UInputAction* mAction_Rotate;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
-	class UInputAction* mAction_Shoot;
+	UInputAction* mAction_Shoot;
+
+
+
+	// Montage
+	class UPlayerAnimInstance* mAniminstance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	TMap<FString, UAnimMontage*> mUpperBodyMontageMap;
+
 
 
 	// Called when the game starts or when spawned
@@ -62,6 +71,8 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	void SetAnimInstance(UPlayerAnimInstance* animInstance) { mAniminstance = animInstance; }
 
 	// Actions
 	void BindActions(UInputComponent* PlayerInputComponent);

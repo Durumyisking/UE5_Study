@@ -34,6 +34,8 @@ public:
 	UFUNCTION()
 	void AnimNotify_ShootLoop();
 
+	void PlayMontage(UAnimMontage* montage);
+
 private:
 	class APlayerCharacter* mPlayer;
 

@@ -6,6 +6,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
+#include "PlayerAnimInstance.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -19,6 +20,8 @@ APlayerCharacter::APlayerCharacter()
 	, mAction_Run(nullptr)
 	, mAction_Rotate(nullptr)
 	, mAction_Shoot(nullptr)
+	, mAniminstance(nullptr)
+	, mUpperBodyMontageMap{}
 	, mMoveForwardSpeed(0.5f)
 	, mMoveBackSpeed(0.25f)
 	, mMoveSideSpeed(0.5f)
@@ -244,6 +247,8 @@ void APlayerCharacter::Shoot(const FInputActionValue& value)
 		{
 			mState[static_cast<UINT>(EPlayerState::Idle)] = false;
 			mState[static_cast<UINT>(EPlayerState::Shoot)] = true;
+
+			mAniminstance->PlayMontage(mUpperBodyMontageMap["Shoot"]);
 		}
 	}
 	else

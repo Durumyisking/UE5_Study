@@ -18,6 +18,10 @@ void UPlayerAnimInstance::NativeInitializeAnimation()
 	// TryGetPawnOwner : 이 AnimInstance를 가지고 있는 메쉬의 Pawn을 얻어온다.
 	// Player를 얻는다
 	mPlayer = Cast<APlayerCharacter>(TryGetPawnOwner());
+	if (IsValid(mPlayer))
+	{
+		mPlayer->SetAnimInstance(this);
+	}
 }
 
 void UPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -45,7 +49,7 @@ void UPlayerAnimInstance::PrintLogByState()
 		PrintViewport(0.5f, FColor::Blue, "AnimState : Run");
 		break;
 	case EPlayerAnimState::Shoot:
-		PrintViewport(0.5f, FColor::Blue, "AnimState : Run");
+		PrintViewport(0.5f, FColor::Blue, "AnimState : Shoot");
 		break;
 	case EPlayerAnimState::End:
 		break;
@@ -102,7 +106,6 @@ void UPlayerAnimInstance::PlayerAnimStateOperate()
 		{
 			mAnimState = EPlayerAnimState::Shoot;
 		}
-
 	}
 }
 
@@ -117,4 +120,16 @@ void UPlayerAnimInstance::AnimNotify_ShootLoop()
 	{
 
 	}
+}
+
+void UPlayerAnimInstance::PlayMontage(UAnimMontage* montage)
+{
+	if (IsValid(montage))
+	{
+		if (!Montage_IsPlaying(montage))
+		{
+			Montage_Play(montage);
+		}
+	}
+
 }
