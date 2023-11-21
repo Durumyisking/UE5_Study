@@ -23,6 +23,9 @@ public:
 
 	EPlayerAnimState GetAnimState() const { return mAnimState; }
 	EMoveDir GetMoveDir() const { return mMoveDir; }
+	bool IsZooming() const { return mbZooming; }
+	void SetZoomOn() { mbZooming = true; }
+	void SetZoomOff() { mbZooming = false; }
 
 	void PrintLogByState();
 	void PlayerAnimStateOperate();
@@ -43,4 +46,9 @@ private:
 	EPlayerAnimState mAnimState;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	EMoveDir mMoveDir;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	bool mbZooming;
+
+
 };

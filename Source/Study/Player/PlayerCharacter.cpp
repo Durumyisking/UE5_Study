@@ -13,6 +13,7 @@ APlayerCharacter::APlayerCharacter()
 	: mCamera(nullptr)
 	, mSpringArm(nullptr)
 	, mInputMappingContext(nullptr)
+	, mAction_Idle(nullptr)
 	, mAction_MoveForward(nullptr)
 	, mAction_MoveBack(nullptr)
 	, mAction_MoveSide(nullptr)
@@ -20,6 +21,7 @@ APlayerCharacter::APlayerCharacter()
 	, mAction_Run(nullptr)
 	, mAction_Rotate(nullptr)
 	, mAction_Shoot(nullptr)
+	, mAction_Zoom(nullptr)
 	, mAniminstance(nullptr)
 	, mUpperBodyMontageMap{}
 	, mMoveForwardSpeed(0.5f)
@@ -119,6 +121,9 @@ void APlayerCharacter::BindActions(UInputComponent* PlayerInputComponent)
 
 		playerEIcomponent->BindAction(mAction_Shoot, ETriggerEvent::Triggered, this, &APlayerCharacter::Shoot);
 		playerEIcomponent->BindAction(mAction_Shoot, ETriggerEvent::Completed, this, &APlayerCharacter::Shoot);
+
+		playerEIcomponent->BindAction(mAction_Zoom, ETriggerEvent::Triggered, this, &APlayerCharacter::ZoomIn);
+		playerEIcomponent->BindAction(mAction_Zoom, ETriggerEvent::Completed, this, &APlayerCharacter::ZoomOut);
 	}
 
 }
@@ -210,6 +215,8 @@ void APlayerCharacter::Run(const FInputActionValue& value)
 			mState[static_cast<UINT>(EPlayerState::Run)] = true;
 			mMoveForwardSpeed = 1.f;
 			mMoveSideSpeed = 0.25f;
+
+			mAniminstance->SetZoomOff();
 		}
 		else
 		{
@@ -258,6 +265,18 @@ void APlayerCharacter::Shoot(const FInputActionValue& value)
 
 }
 
+void APlayerCharacter::ZoomIn(const FInputActionValue& value)
+{	
+	if (!mState[static_cast<UINT>(EPlayerState::Run)])
+	{
+		mAniminstance->SetZoomOn();
+	}
+}
+void APlayerCharacter::ZoomOut(const FInputActionValue& value)
+{
+	mAniminstance->SetZoomOff();
+}
+
 void APlayerCharacter::SetPlayerSingleState(EPlayerState state)
 {
 	mState.reset();
@@ -282,6 +301,11 @@ void APlayerCharacter::PrintLogByState()
 	{
 		PrintViewport(0.5f, FColor::Red, "State : Shoot");
 	}
+	if (mAniminstance->IsZooming())
+	{
+		PrintViewport(0.5f, FColor::Red, "State : Zoom");
+	}
+
 }
 
 void APlayerCharacter::PrintLogByMoveDir()

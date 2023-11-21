@@ -51,6 +51,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
 	UInputAction* mAction_Shoot;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
+	UInputAction* mAction_Zoom;
+
 
 
 	// Montage
@@ -87,6 +90,8 @@ public:
 	void Rotate(const FInputActionValue& value);
 
 	void Shoot(const FInputActionValue& value);
+	void ZoomIn(const FInputActionValue& value);
+	void ZoomOut(const FInputActionValue& value);
 
 	bool GetPlayerState(EPlayerState state) const { return mState[static_cast<UINT>(state)]; }
 	void SetPlayerState(EPlayerState state, bool value) { mState[static_cast<UINT>(state)] = value; }

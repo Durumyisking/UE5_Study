@@ -8,6 +8,7 @@ UPlayerAnimInstance::UPlayerAnimInstance()
 	: mPlayer(nullptr)
 	, mAnimState(EPlayerAnimState::End)
 	, mMoveDir(EMoveDir::End)
+	, mbZooming(false)
 {
 }
 
@@ -67,6 +68,7 @@ void UPlayerAnimInstance::PlayerAnimStateOperate()
 
 		if (mPlayer->GetPlayerState(EPlayerState::Idle))
 		{
+			LOG(TEXT("ASDF"));
 			mAnimState = EPlayerAnimState::Idle;
 		}
 		else if (mPlayer->GetPlayerState(EPlayerState::Move))
