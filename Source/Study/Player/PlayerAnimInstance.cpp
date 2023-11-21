@@ -49,7 +49,7 @@ void UPlayerAnimInstance::PrintLogByState()
 		PrintViewport(0.5f, FColor::Blue, "AnimState : Run");
 		break;
 	case EPlayerAnimState::Shoot:
-		PrintViewport(0.5f, FColor::Blue, "AnimState : Shoot");
+		PrintViewport(0.5f, FColor::Blue, "AnimState : StandShoot");
 		break;
 	case EPlayerAnimState::End:
 		break;
@@ -97,10 +97,7 @@ void UPlayerAnimInstance::PlayerAnimStateOperate()
 			{
 				mAnimState = EPlayerAnimState::Run;
 			}
-			else if (mPlayer->GetPlayerState(EPlayerState::Shoot))
-			{
-				mAnimState = EPlayerAnimState::Shoot;
-			}
+			
 		}
 		else if (mPlayer->GetPlayerState(EPlayerState::Shoot))
 		{
