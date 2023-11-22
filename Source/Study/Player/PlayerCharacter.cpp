@@ -269,12 +269,22 @@ void APlayerCharacter::ZoomIn(const FInputActionValue& value)
 {	
 	if (!mState[static_cast<UINT>(EPlayerState::Run)])
 	{
-		mAniminstance->SetZoomOn();
+		if (!mAniminstance->IsZooming())
+		{
+			mState[static_cast<UINT>(EPlayerState::Zoom)] = true;
+			mAniminstance->PlayMontage(mUpperBodyMontageMap["ZoomStart"]);
+		}
+		else
+		{
+			mState[static_cast<UINT>(EPlayerState::Zoom)] = false;
+		}
 	}
 }
 void APlayerCharacter::ZoomOut(const FInputActionValue& value)
 {
+	mState[static_cast<UINT>(EPlayerState::Zoom)] = false;
 	mAniminstance->SetZoomOff();
+	mAniminstance->Montage_Stop(0.5f, mUpperBodyMontageMap["ZoomStart"]);
 }
 
 void APlayerCharacter::SetPlayerSingleState(EPlayerState state)

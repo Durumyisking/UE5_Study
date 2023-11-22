@@ -52,6 +52,9 @@ void UPlayerAnimInstance::PrintLogByState()
 	case EPlayerAnimState::Shoot:
 		PrintViewport(0.5f, FColor::Blue, "AnimState : StandShoot");
 		break;
+	case EPlayerAnimState::Zoom:
+		PrintViewport(0.5f, FColor::Blue, "AnimState : Zoom");
+		break;
 	case EPlayerAnimState::End:
 		break;
 	default:
@@ -68,7 +71,6 @@ void UPlayerAnimInstance::PlayerAnimStateOperate()
 
 		if (mPlayer->GetPlayerState(EPlayerState::Idle))
 		{
-			LOG(TEXT("ASDF"));
 			mAnimState = EPlayerAnimState::Idle;
 		}
 		else if (mPlayer->GetPlayerState(EPlayerState::Move))
@@ -105,6 +107,11 @@ void UPlayerAnimInstance::PlayerAnimStateOperate()
 		{
 			mAnimState = EPlayerAnimState::Shoot;
 		}
+
+		if (mPlayer->GetPlayerState(EPlayerState::Zoom))
+		{
+			mAnimState = EPlayerAnimState::Zoom;
+		}
 	}
 }
 
@@ -119,6 +126,12 @@ void UPlayerAnimInstance::AnimNotify_ShootLoop()
 	{
 
 	}
+}
+
+void UPlayerAnimInstance::AnimNotify_ZoomEnd()
+{
+	SetZoomOn();
+	Montage_Stop(0.1f, mPlayer->GetCurrentMontage());
 }
 
 void UPlayerAnimInstance::PlayMontage(UAnimMontage* montage)

@@ -36,6 +36,9 @@ public:
 	void AnimNotify_CreateBullet();
 	UFUNCTION()
 	void AnimNotify_ShootLoop();
+	UFUNCTION()
+	void AnimNotify_ZoomEnd();
+
 
 	void PlayMontage(UAnimMontage* montage);
 

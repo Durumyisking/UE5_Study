@@ -17,7 +17,12 @@ AGhost::AGhost()
 	{
 		mUpperBodyMontageMap.Add("Shoot", AMShoot.Object);
 	}
-	
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> AMZoomStart(TEXT("/Script/Engine.AnimMontage'/Game/MyContents/Animation/Montages/Ghost/AM_Ghost_ZoomStart.AM_Ghost_ZoomStart'"));
+	if (AMZoomStart.Succeeded())
+	{
+		mUpperBodyMontageMap.Add("ZoomStart", AMZoomStart.Object);
+	}
+
 
 	// FObjectFinder, ClassFinder는 생성자에서만 사용이 가능하다.
 	// ClassFinder로 하면 아직 Class로 Instance를 생성 안한거 (이따 써서 인스턴스 만들라고 이야기 해놓는거)												클래스는_C 붙여야해!

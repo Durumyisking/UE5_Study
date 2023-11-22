@@ -39,6 +39,7 @@ enum class EPlayerState : uint8
 	Jump,
 	Run,
 	Shoot,
+	Zoom,
 	End,
 };
 UENUM(BlueprintType)
@@ -49,6 +50,7 @@ enum class EPlayerAnimState : uint8
 	Jump,
 	Run,
 	Shoot,
+	Zoom,
 	End,
 };
 
