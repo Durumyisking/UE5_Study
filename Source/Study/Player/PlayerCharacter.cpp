@@ -252,15 +252,14 @@ void APlayerCharacter::Shoot(const FInputActionValue& value)
 	{
 		if(!mState[static_cast<UINT>(EPlayerState::Run)])
 		{
-			mState[static_cast<UINT>(EPlayerState::Idle)] = false;
-			mState[static_cast<UINT>(EPlayerState::Shoot)] = true;
-
-			mAniminstance->PlayMontage(mUpperBodyMontageMap["Shoot"]);
+			// ÁÜ Start ¸ùÅ¸ÁÖ Àç»ýÁßÀÌ¸é
+			if (!mAniminstance->Montage_IsPlaying(mUpperBodyMontageMap["ZoomStart"]))
+			{
+				mAniminstance->PlayMontage(mUpperBodyMontageMap["Shoot"]);
+				mState[static_cast<UINT>(EPlayerState::Idle)] = false;
+				mState[static_cast<UINT>(EPlayerState::Shoot)] = true;
+			}
 		}
-	}
-	else
-	{
-		mState[static_cast<UINT>(EPlayerState::Shoot)] = false;
 	}
 
 }
@@ -274,17 +273,13 @@ void APlayerCharacter::ZoomIn(const FInputActionValue& value)
 			mState[static_cast<UINT>(EPlayerState::Zoom)] = true;
 			mAniminstance->PlayMontage(mUpperBodyMontageMap["ZoomStart"]);
 		}
-		else
-		{
-			mState[static_cast<UINT>(EPlayerState::Zoom)] = false;
-		}
 	}
 }
 void APlayerCharacter::ZoomOut(const FInputActionValue& value)
 {
 	mState[static_cast<UINT>(EPlayerState::Zoom)] = false;
 	mAniminstance->SetZoomOff();
-	mAniminstance->Montage_Stop(0.5f, mUpperBodyMontageMap["ZoomStart"]);
+	mAniminstance->StopMontage(mUpperBodyMontageMap["ZoomStart"], 0.5f);
 }
 
 void APlayerCharacter::SetPlayerSingleState(EPlayerState state)

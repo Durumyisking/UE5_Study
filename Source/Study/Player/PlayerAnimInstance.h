@@ -37,10 +37,13 @@ public:
 	UFUNCTION()
 	void AnimNotify_ShootLoop();
 	UFUNCTION()
+	void AnimNotify_ShootEnd();
+	UFUNCTION()
 	void AnimNotify_ZoomEnd();
 
 
 	void PlayMontage(UAnimMontage* montage);
+	void StopMontage(UAnimMontage* montage, float inBlendOutTime = 0.1f);
 
 private:
 	class APlayerCharacter* mPlayer;

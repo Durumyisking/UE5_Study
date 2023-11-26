@@ -54,8 +54,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
 	UInputAction* mAction_Zoom;
 
-
-
 	// Montage
 	class UPlayerAnimInstance* mAniminstance;
 
@@ -100,6 +98,8 @@ public:
 	bool GetMoveDir(EMoveDir dir) const { return mMoveDir[static_cast<UINT>(dir)]; }
 	void SetMoveDir(EMoveDir dir, bool value) { mMoveDir[static_cast<UINT>(dir)] = value; }
 
+	const UAnimMontage* FindAnimMontage(const FString& key) { return mUpperBodyMontageMap[key]; }
+
 
 	// state Log
 	void PrintLogByState();
@@ -114,5 +114,7 @@ private:
 
 	std::bitset< static_cast<UINT>(EPlayerState::End)> mState;
 	std::bitset< static_cast<UINT>(EMoveDir::End)> mMoveDir;
+
+
 
 };

@@ -107,7 +107,6 @@ void UPlayerAnimInstance::PlayerAnimStateOperate()
 		{
 			mAnimState = EPlayerAnimState::Shoot;
 		}
-
 		if (mPlayer->GetPlayerState(EPlayerState::Zoom))
 		{
 			mAnimState = EPlayerAnimState::Zoom;
@@ -128,10 +127,18 @@ void UPlayerAnimInstance::AnimNotify_ShootLoop()
 	}
 }
 
+void UPlayerAnimInstance::AnimNotify_ShootEnd()
+{
+	mPlayer->SetPlayerState(EPlayerState::Shoot, false);
+}
+
 void UPlayerAnimInstance::AnimNotify_ZoomEnd()
 {
 	SetZoomOn();
-	Montage_Stop(0.1f, mPlayer->GetCurrentMontage());
+
+	mPlayer->SetPlayerState(EPlayerState::Zoom, false);
+	mPlayer->SetPlayerState(EPlayerState::Idle, true);
+	StopMontage(GetCurrentActiveMontage());
 }
 
 void UPlayerAnimInstance::PlayMontage(UAnimMontage* montage)
@@ -144,4 +151,15 @@ void UPlayerAnimInstance::PlayMontage(UAnimMontage* montage)
 		}
 	}
 
+}
+
+void UPlayerAnimInstance::StopMontage(UAnimMontage* montage, float inBlendOutTime)
+{
+	if (IsValid(montage))
+	{
+		if (Montage_IsPlaying(montage))
+		{
+			Montage_Stop(inBlendOutTime, montage);
+		}
+	}
 }
