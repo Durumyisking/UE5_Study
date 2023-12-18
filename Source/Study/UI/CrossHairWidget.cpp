@@ -31,5 +31,16 @@ void UCrossHairWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime
 
 void UCrossHairWidget::ZoomIn()
 {
-	
+	mCrossHairU->SetOpacity(0.5f);
+	mCrossHairD->SetOpacity(0.5f);
+	mCrossHairL->SetOpacity(0.5f);
+	mCrossHairR->SetOpacity(0.5f);
+}
+
+void UCrossHairWidget::ZoomOut()
+{
+	mCrossHairU->SetOpacity(1.f);
+	mCrossHairD->SetOpacity(1.f);
+	mCrossHairL->SetOpacity(1.f);
+	mCrossHairR->SetOpacity(1.f);
 }

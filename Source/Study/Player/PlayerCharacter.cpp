@@ -7,6 +7,7 @@
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
 #include "PlayerAnimInstance.h"
+#include "../UI/CrossHairWidget.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -23,6 +24,7 @@ APlayerCharacter::APlayerCharacter()
 	, mAction_Shoot(nullptr)
 	, mAction_Zoom(nullptr)
 	, mAniminstance(nullptr)
+	, mCrosshair(nullptr)
 	, mUpperBodyMontageMap{}
 	, mMoveForwardSpeed(0.5f)
 	, mMoveBackSpeed(0.25f)
@@ -33,20 +35,33 @@ APlayerCharacter::APlayerCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	// 컨트롤러(마우스)를 사용한 캐릭터의 회전을 막습니다.
+	bUseControllerRotationPitch = false;
+	//bUseControllerRotationYaw = false;
+	bUseControllerRotationRoll = false;
+
 	mSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Arm"));
+	mSpringArm->SetupAttachment(RootComponent);
+	mSpringArm->TargetArmLength = 300.f;
+	mSpringArm->bUsePawnControlRotation = true;
+
 	mCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-
-	mSpringArm->SetupAttachment(GetRootComponent());
 	mCamera->SetupAttachment(mSpringArm, USpringArmComponent::SocketName);
-	mSpringArm->TargetArmLength = 100.f;
-	mSpringArm->TargetOffset = { 0.f, -20.f, 125.f };
+	mCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+	//GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f); // ...at this rotation rate
 
-	auto movementComponent = Cast< UCharacterMovementComponent>(GetCharacterMovement());
-	if (movementComponent)
-	{
-		movementComponent->MaxWalkSpeed = 300.f;
-		movementComponent->GroundFriction = 16.f;
-	}
+	GetCharacterMovement()->MaxWalkSpeed = 300.f;
+	GetCharacterMovement()->GroundFriction = 16.f;
+	GetCharacterMovement()->bUseControllerDesiredRotation = true;
+
+
+	//static ConstructorHelpers::FClassFinder<UCrossHairWidget> CrosshairWidget(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/MyContents/UI/UI_Crosshair.UI_Crosshair'"));
+
+	//if (CrosshairWidget.Succeeded())
+	//{
+	//	mCrosshair = CreateWidget<UCrossHairWidget>(GetWorld(), CrosshairWidget)
+	//}
+
 
 }
 
@@ -57,15 +72,10 @@ void APlayerCharacter::BeginPlay()
 	mCamera->AddRelativeRotation({ -25.f, 0.f, 0.f });
 
 	// 플레이어 컨트롤러 획득
-	auto playerController = Cast<APlayerController>(GetController());
-
-	if (IsValid(playerController))
+	if (auto playerController = Cast<APlayerController>(GetController()))
 	{
 		// LocalPlayer의 향상된입력 얻기
-		auto eiSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(playerController->GetLocalPlayer());
-		// Add the input mapping context
-
-		if (nullptr != eiSubsystem)
+		if (auto eiSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(playerController->GetLocalPlayer()))
 		{
 			eiSubsystem->AddMappingContext(mInputMappingContext, 0);
 		}
@@ -125,7 +135,10 @@ void APlayerCharacter::BindActions(UInputComponent* PlayerInputComponent)
 		playerEIcomponent->BindAction(mAction_Zoom, ETriggerEvent::Triggered, this, &APlayerCharacter::ZoomIn);
 		playerEIcomponent->BindAction(mAction_Zoom, ETriggerEvent::Completed, this, &APlayerCharacter::ZoomOut);
 	}
-
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("'%s' EnhancedComponent 초기화 실패!"), *GetNameSafe(this));
+	}
 }
 
 void APlayerCharacter::Idle(const FInputActionValue& value)
@@ -235,13 +248,15 @@ void APlayerCharacter::Run(const FInputActionValue& value)
 
 void APlayerCharacter::Rotate(const FInputActionValue& value)
 {
-	FVector3d vec = value.Get<FVector3d>();
+	// input is a Vector2D
+	FVector2D LookAxisVector = value.Get<FVector2D>();
 
-	FRotator rot(vec.Y, vec.X, 0.f);
-	AddActorLocalRotation(rot);
-	rot.Yaw = 0.f;
-	mSpringArm->AddLocalRotation(rot);
-
+	if (Controller != nullptr)
+	{
+		// add yaw and pitch input to controller
+		AddControllerYawInput(LookAxisVector.X);
+		AddControllerPitchInput(LookAxisVector.Y);
+	}
 }
 
 void APlayerCharacter::Shoot(const FInputActionValue& value)

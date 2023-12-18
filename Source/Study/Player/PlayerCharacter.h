@@ -17,10 +17,10 @@ public:
 	APlayerCharacter();
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* mCamera;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	USpringArmComponent* mSpringArm;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
@@ -100,6 +100,11 @@ public:
 
 	const UAnimMontage* FindAnimMontage(const FString& key) { return mUpperBodyMontageMap[key]; }
 
+	/** Returns CameraBoom subobject **/
+	FORCEINLINE class USpringArmComponent* GetSprintArm() const { return mSpringArm; }
+	/** Returns FollowCamera subobject **/
+	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return mCamera; }
+
 
 	// state Log
 	void PrintLogByState();
@@ -108,13 +113,16 @@ public:
 	bool IsShooting() const { return mState[static_cast<UINT>(EPlayerAnimState::Shoot)]; }
 
 private:
+
+
+	class UCrossHairWidget* mCrosshair;
+
 	float mMoveForwardSpeed;
 	float mMoveBackSpeed;
 	float mMoveSideSpeed;
 
 	std::bitset< static_cast<UINT>(EPlayerState::End)> mState;
 	std::bitset< static_cast<UINT>(EMoveDir::End)> mMoveDir;
-
 
 
 };
