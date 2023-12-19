@@ -27,6 +27,9 @@ public:
 	void SetZoomOn() { mbZooming = true; }
 	void SetZoomOff() { mbZooming = false; }
 
+	//UFUNCTION(meta = (BlueprintThreadSafe))
+	//UCharacterMovementComponent* GetCharacterMovementComponent() const { return mCharacterMovement; }
+
 	void PrintLogByState();
 	void PlayerAnimStateOperate();
 
@@ -47,6 +50,10 @@ public:
 
 private:
 	class APlayerCharacter* mPlayer;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UCharacterMovementComponent* mCharacterMovement;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	EPlayerAnimState mAnimState;

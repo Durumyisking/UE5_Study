@@ -49,10 +49,17 @@ APlayerCharacter::APlayerCharacter()
 	mCamera->SetupAttachment(mSpringArm, USpringArmComponent::SocketName);
 	mCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 	//GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f); // ...at this rotation rate
+	mCamera->AddLocalOffset({ 20.f, 40.f, 65.f });
 
 	GetCharacterMovement()->MaxWalkSpeed = 300.f;
 	GetCharacterMovement()->GroundFriction = 16.f;
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
+
+	const ConstructorHelpers::FObjectFinder<UCurveFloat> Curve(TEXT("/Script/Engine.CurveFloat'/Game/MyContents/ETC/ZoomCurve.ZoomCurve'"));
+	if (Curve.Succeeded())
+	{
+		mZoomCurve = Curve.Object;
+	}
 
 
 	//static ConstructorHelpers::FClassFinder<UCrossHairWidget> CrosshairWidget(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/MyContents/UI/UI_Crosshair.UI_Crosshair'"));
@@ -69,7 +76,6 @@ APlayerCharacter::APlayerCharacter()
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	mCamera->AddRelativeRotation({ -25.f, 0.f, 0.f });
 
 	// ÇÃ·¹ÀÌ¾î ÄÁÆ®·Ñ·¯ È¹µæ
 	if (auto playerController = Cast<APlayerController>(GetController()))
@@ -80,6 +86,9 @@ void APlayerCharacter::BeginPlay()
 			eiSubsystem->AddMappingContext(mInputMappingContext, 0);
 		}
 	}
+
+
+	ZoomTimelineSetting();
 }
 
 // Called every frame
@@ -87,9 +96,9 @@ void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	PrintLogByState();
-	PrintLogByMoveDir();
-
+	mTimeline.TickTimeline(DeltaTime);
+	//PrintLogByState();
+	//PrintLogByMoveDir();
 }
 
 // Called to bind functionality to input
@@ -122,7 +131,8 @@ void APlayerCharacter::BindActions(UInputComponent* PlayerInputComponent)
 		playerEIcomponent->BindAction(mAction_MoveSide, ETriggerEvent::Triggered, this, &APlayerCharacter::MoveSide);
 		playerEIcomponent->BindAction(mAction_MoveSide, ETriggerEvent::Completed, this, &APlayerCharacter::MoveSide);
 
-		playerEIcomponent->BindAction(mAction_Jump, ETriggerEvent::Triggered, this, &APlayerCharacter::Jump);
+		//playerEIcomponent->BindAction(mAction_Jump, ETriggerEvent::Started, this, &APlayerCharacter::Jump);
+		//playerEIcomponent->BindAction(mAction_Jump, ETriggerEvent::Completed, this, &APlayerCharacter::StopJumping);
 
 		playerEIcomponent->BindAction(mAction_Run, ETriggerEvent::Triggered, this, &APlayerCharacter::Run);
 		playerEIcomponent->BindAction(mAction_Run, ETriggerEvent::Completed, this, &APlayerCharacter::Run);
@@ -132,6 +142,7 @@ void APlayerCharacter::BindActions(UInputComponent* PlayerInputComponent)
 		playerEIcomponent->BindAction(mAction_Shoot, ETriggerEvent::Triggered, this, &APlayerCharacter::Shoot);
 		playerEIcomponent->BindAction(mAction_Shoot, ETriggerEvent::Completed, this, &APlayerCharacter::Shoot);
 
+		playerEIcomponent->BindAction(mAction_Zoom, ETriggerEvent::Started, this, &APlayerCharacter::ZoomInStart);
 		playerEIcomponent->BindAction(mAction_Zoom, ETriggerEvent::Triggered, this, &APlayerCharacter::ZoomIn);
 		playerEIcomponent->BindAction(mAction_Zoom, ETriggerEvent::Completed, this, &APlayerCharacter::ZoomOut);
 	}
@@ -217,6 +228,20 @@ void APlayerCharacter::MoveSide(const FInputActionValue& value)
 	
 }
 
+void APlayerCharacter::Jump()
+{
+	Super::Jump();
+	mState.reset();
+	mState[static_cast<UINT>(EPlayerState::Jump)] = true;
+}
+
+void APlayerCharacter::StopJumping()
+{
+	Super::StopJumping();
+	mState.reset();
+	mState[static_cast<UINT>(EPlayerState::Jump)] = false;
+}
+
 void APlayerCharacter::Run(const FInputActionValue& value)
 {
 	const bool input = value.Get<bool>();
@@ -230,6 +255,7 @@ void APlayerCharacter::Run(const FInputActionValue& value)
 			mMoveSideSpeed = 0.25f;
 
 			mAniminstance->SetZoomOff();
+
 		}
 		else
 		{
@@ -279,7 +305,12 @@ void APlayerCharacter::Shoot(const FInputActionValue& value)
 
 }
 
-void APlayerCharacter::ZoomIn(const FInputActionValue& value)
+void APlayerCharacter::ZoomInStart()
+{
+	mTimeline.ReverseFromEnd();
+}
+
+void APlayerCharacter::ZoomIn()
 {	
 	if (!mState[static_cast<UINT>(EPlayerState::Run)])
 	{
@@ -290,11 +321,28 @@ void APlayerCharacter::ZoomIn(const FInputActionValue& value)
 		}
 	}
 }
-void APlayerCharacter::ZoomOut(const FInputActionValue& value)
+void APlayerCharacter::ZoomOut()
 {
 	mState[static_cast<UINT>(EPlayerState::Zoom)] = false;
 	mAniminstance->SetZoomOff();
 	mAniminstance->StopMontage(mUpperBodyMontageMap["ZoomStart"], 0.5f);
+	mTimeline.PlayFromStart();
+}
+
+void APlayerCharacter::ZoomTimelineSetting()
+{
+	mTimeline = {};
+	FOnTimelineFloat callback = {};
+	callback.BindUFunction(this, "CameraZoomInOut");
+	mTimeline.AddInterpFloat(mZoomCurve, callback);
+	mTimeline.SetTimelineLength(0.5f);
+}
+
+void APlayerCharacter::CameraZoomInOut(float value)
+{
+	LOG(TEXT("armlength : %s"), mSpringArm->TargetArmLength);
+	mSpringArm->TargetArmLength = value;
+	mSpringArm->AddRelativeLocation({1.f,1.f,1.f});
 }
 
 void APlayerCharacter::SetPlayerSingleState(EPlayerState state)

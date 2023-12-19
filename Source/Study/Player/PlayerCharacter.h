@@ -4,6 +4,7 @@
 
 #include "../GameInfo.h"
 #include "GameFramework/Character.h"
+#include "Components/TimeLineComponent.h"
 #include "PlayerCharacter.generated.h"
 
 UCLASS()
@@ -60,8 +61,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	TMap<FString, UAnimMontage*> mUpperBodyMontageMap;
 
-
-
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
@@ -84,12 +83,22 @@ public:
 	void MoveBack(const struct FInputActionValue& value);
 	void MoveSide(const struct FInputActionValue& value);
 
+	virtual void Jump		();
+	virtual void StopJumping();
+
+
 	void Run(const FInputActionValue& value);
 	void Rotate(const FInputActionValue& value);
 
 	void Shoot(const FInputActionValue& value);
-	void ZoomIn(const FInputActionValue& value);
-	void ZoomOut(const FInputActionValue& value);
+	void ZoomInStart();
+	void ZoomIn();
+	void ZoomOut();
+
+	void ZoomTimelineSetting();
+
+	UFUNCTION()
+	void CameraZoomInOut(float value);
 
 	bool GetPlayerState(EPlayerState state) const { return mState[static_cast<UINT>(state)]; }
 	void SetPlayerState(EPlayerState state, bool value) { mState[static_cast<UINT>(state)] = value; }
@@ -113,9 +122,11 @@ public:
 	bool IsShooting() const { return mState[static_cast<UINT>(EPlayerAnimState::Shoot)]; }
 
 private:
-
-
 	class UCrossHairWidget* mCrosshair;
+
+	FTimeline mTimeline;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Timeline", Meta = (AllowPrivateAccess = "true"))
+	UCurveFloat* mZoomCurve;
 
 	float mMoveForwardSpeed;
 	float mMoveBackSpeed;

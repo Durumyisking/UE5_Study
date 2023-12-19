@@ -3,6 +3,7 @@
 
 #include "MyGameModeBase.h"
 #include "UI/MainWidget.h"
+#include "Player\Ghost.h"
 
 AMyGameModeBase::AMyGameModeBase()
 {
@@ -11,6 +12,8 @@ AMyGameModeBase::AMyGameModeBase()
 	{
 		mMainWidgetClass = MainWidgetClass.Class;
 	}
+
+	DefaultPawnClass = AGhost::StaticClass();
 }
 
 void AMyGameModeBase::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)

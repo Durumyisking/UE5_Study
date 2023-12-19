@@ -22,6 +22,7 @@ void UPlayerAnimInstance::NativeInitializeAnimation()
 	if (IsValid(mPlayer))
 	{
 		mPlayer->SetAnimInstance(this);
+		mCharacterMovement = mPlayer->GetCharacterMovement();
 	}
 }
 
@@ -29,7 +30,7 @@ void UPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
 
-	PrintLogByState();
+	//PrintLogByState();
 	PlayerAnimStateOperate();
 	
 }
