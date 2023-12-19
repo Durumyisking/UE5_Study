@@ -114,6 +114,7 @@ public:
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return mCamera; }
 
+	void SetMainWidget(class UMainWidget* mainWidget) { mMainWidget = mainWidget; }
 
 	// state Log
 	void PrintLogByState();
@@ -122,7 +123,8 @@ public:
 	bool IsShooting() const { return mState[static_cast<UINT>(EPlayerAnimState::Shoot)]; }
 
 private:
-	class UCrossHairWidget* mCrosshair;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "MainWidget", Meta = (AllowPrivateAccess = "true"))
+	UMainWidget* mMainWidget;
 
 	FTimeline mTimeline;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Timeline", Meta = (AllowPrivateAccess = "true"))

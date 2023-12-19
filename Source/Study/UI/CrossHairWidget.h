@@ -25,8 +25,8 @@ protected:
 
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime);
 
-	void ZoomIn();
-	void ZoomOut();
+public:
+	void ZoomInOut(float value);
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))

@@ -4,6 +4,7 @@
 
 #include "../GameInfo.h"
 #include "Blueprint/UserWidget.h"
+#include "CrossHairWidget.h"
 #include "MainWidget.generated.h"
 
 /**
@@ -20,4 +21,11 @@ protected:
 	virtual void NativeDestruct();
 
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime);
+
+public:
+	UCrossHairWidget* GetCrosshairWidget() { return mCrosshairWidget; }
+
+private:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crosshair", meta = (AllowPrivateAccess = "true"))
+	UCrossHairWidget* mCrosshairWidget;
 };

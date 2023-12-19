@@ -12,6 +12,11 @@ void UCrossHairWidget::NativePreConstruct()
 	mCrossHairR = Cast<UImage>(GetWidgetFromName(TEXT("crosshair_R")));
 	mCrossHairU = Cast<UImage>(GetWidgetFromName(TEXT("crosshair_U")));
 	mCrossHairD = Cast<UImage>(GetWidgetFromName(TEXT("crosshair_D")));
+	float inintalOffset = 150.f;
+	mCrossHairU->SetRenderTranslation({ 0.f	 , inintalOffset });
+	mCrossHairD->SetRenderTranslation({ 0.f	 , -inintalOffset });
+	mCrossHairL->SetRenderTranslation({ inintalOffset  , 0.f });
+	mCrossHairR->SetRenderTranslation({ -inintalOffset , 0.f });
 }
 
 void UCrossHairWidget::NativeConstruct()
@@ -29,18 +34,11 @@ void UCrossHairWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime
 	Super::NativeTick(MyGeometry, InDeltaTime);
 }
 
-void UCrossHairWidget::ZoomIn()
+void UCrossHairWidget::ZoomInOut(float value)
 {
-	mCrossHairU->SetOpacity(0.5f);
-	mCrossHairD->SetOpacity(0.5f);
-	mCrossHairL->SetOpacity(0.5f);
-	mCrossHairR->SetOpacity(0.5f);
-}
-
-void UCrossHairWidget::ZoomOut()
-{
-	mCrossHairU->SetOpacity(1.f);
-	mCrossHairD->SetOpacity(1.f);
-	mCrossHairL->SetOpacity(1.f);
-	mCrossHairR->SetOpacity(1.f);
+	float offset = 75.f + (75.f * value);
+	mCrossHairU->SetRenderTranslation( { 0.f					, offset });
+	mCrossHairD->SetRenderTranslation( { 0.f					, -offset });
+	mCrossHairL->SetRenderTranslation( { offset	, 0.f });
+	mCrossHairR->SetRenderTranslation( {-offset	, 0.f});
 }

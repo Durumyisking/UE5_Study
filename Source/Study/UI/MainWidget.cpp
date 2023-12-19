@@ -6,7 +6,7 @@
 void UMainWidget::NativePreConstruct()
 {
 	Super::NativePreConstruct();
-
+	mCrosshairWidget = Cast<UCrossHairWidget>(GetWidgetFromName(TEXT("UI_Crosshair")));
 }
 
 void UMainWidget::NativeConstruct()

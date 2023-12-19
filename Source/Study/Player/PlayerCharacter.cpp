@@ -7,7 +7,8 @@
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
 #include "PlayerAnimInstance.h"
-#include "../UI/CrossHairWidget.h"
+#include "../UI/MainWidget.h"
+#include "MyGameModeBase.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -24,7 +25,7 @@ APlayerCharacter::APlayerCharacter()
 	, mAction_Shoot(nullptr)
 	, mAction_Zoom(nullptr)
 	, mAniminstance(nullptr)
-	, mCrosshair(nullptr)
+	, mMainWidget(nullptr)
 	, mUpperBodyMontageMap{}
 	, mMoveForwardSpeed(0.5f)
 	, mMoveBackSpeed(0.25f)
@@ -60,16 +61,6 @@ APlayerCharacter::APlayerCharacter()
 	{
 		mZoomCurve = Curve.Object;
 	}
-
-
-	//static ConstructorHelpers::FClassFinder<UCrossHairWidget> CrosshairWidget(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/MyContents/UI/UI_Crosshair.UI_Crosshair'"));
-
-	//if (CrosshairWidget.Succeeded())
-	//{
-	//	mCrosshair = CreateWidget<UCrossHairWidget>(GetWorld(), CrosshairWidget)
-	//}
-
-
 }
 
 // Called when the game starts or when spawned
@@ -87,6 +78,10 @@ void APlayerCharacter::BeginPlay()
 		}
 	}
 
+	if (AMyGameModeBase* mode = Cast< AMyGameModeBase>(UGameplayStatics::GetGameMode(GetWorld())))
+	{
+		mMainWidget = mode->GetMainWidget();
+	}
 
 	ZoomTimelineSetting();
 }
@@ -340,8 +335,8 @@ void APlayerCharacter::ZoomTimelineSetting()
 
 void APlayerCharacter::CameraZoomInOut(float value)
 {
-	//LOG(TEXT("armlength : %s"), mSpringArm->TargetArmLength);
-	mSpringArm->TargetArmLength = value;
+	mSpringArm->TargetArmLength = 75.f + (225.f * value);
+	mMainWidget->GetCrosshairWidget()->ZoomInOut(value);
 }
 
 void APlayerCharacter::SetPlayerSingleState(EPlayerState state)

@@ -7,7 +7,7 @@
 
 AMyGameModeBase::AMyGameModeBase()
 {
-	ConstructorHelpers::FClassFinder<UMainWidget> MainWidgetClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/MyContents/UI/UI_Main.UI_Main_C'"));
+	static ConstructorHelpers::FClassFinder<UMainWidget> MainWidgetClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/MyContents/UI/UI_Main.UI_Main_C'"));
 	if (MainWidgetClass.Succeeded())
 	{
 		mMainWidgetClass = MainWidgetClass.Class;
