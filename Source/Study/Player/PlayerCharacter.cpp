@@ -335,14 +335,13 @@ void APlayerCharacter::ZoomTimelineSetting()
 	FOnTimelineFloat callback = {};
 	callback.BindUFunction(this, "CameraZoomInOut");
 	mTimeline.AddInterpFloat(mZoomCurve, callback);
-	mTimeline.SetTimelineLength(0.5f);
+	mTimeline.SetTimelineLength(0.2f);
 }
 
 void APlayerCharacter::CameraZoomInOut(float value)
 {
-	LOG(TEXT("armlength : %s"), mSpringArm->TargetArmLength);
+	//LOG(TEXT("armlength : %s"), mSpringArm->TargetArmLength);
 	mSpringArm->TargetArmLength = value;
-	mSpringArm->AddRelativeLocation({1.f,1.f,1.f});
 }
 
 void APlayerCharacter::SetPlayerSingleState(EPlayerState state)

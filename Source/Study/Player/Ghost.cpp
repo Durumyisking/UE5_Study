@@ -33,5 +33,6 @@ AGhost::AGhost()
 	{
 		GetMesh()->SetAnimInstanceClass(AnimAsset.Class);
 	}
+
 }
  
