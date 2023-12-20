@@ -301,7 +301,10 @@ void APlayerCharacter::Shoot(const FInputActionValue& value)
 
 void APlayerCharacter::ZoomInStart()
 {
-	mTimeline.ReverseFromEnd();
+	if (!mState[static_cast<UINT>(EPlayerState::Run)])
+	{
+		mTimeline.ReverseFromEnd();
+	}
 }
 
 void APlayerCharacter::ZoomIn()
