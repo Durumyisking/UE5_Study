@@ -1,5 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #include "PlayerAnimInstance.h"
 #include "PlayerCharacter.h"
@@ -16,8 +15,8 @@ void UPlayerAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
 
-	// TryGetPawnOwner : ÀÌ AnimInstance¸¦ °¡Áö°í ÀÖ´Â ¸Ş½¬ÀÇ PawnÀ» ¾ò¾î¿Â´Ù.
-	// Player¸¦ ¾ò´Â´Ù
+	// TryGetPawnOwner : ì´ AnimInstanceë¥¼ ê°€ì§€ê³  ìˆëŠ” ë©”ì‰¬ì˜ Pawnì„ ì–»ì–´ì˜¨ë‹¤.
+	// Playerë¥¼ ì–»ëŠ”ë‹¤
 	mPlayer = Cast<APlayerCharacter>(TryGetPawnOwner());
 	if (IsValid(mPlayer))
 	{
@@ -68,7 +67,7 @@ void UPlayerAnimInstance::PlayerAnimStateOperate()
 
 	if (IsValid(mPlayer))
 	{
-		// ÇÃ·¹ÀÌ¾î »óÅÂ¿¡ µû¶ó¼­ ¾Ö´Ï¸ŞÀÌ¼Ç ¹Ù²ãÁÖÀÚ
+		// í”Œë ˆì´ì–´ ìƒíƒœì— ë”°ë¼ì„œ ì• ë‹ˆë©”ì´ì…˜ ë°”ê¿”ì£¼ì
 
 		if (mPlayer->GetPlayerState(EPlayerState::Idle))
 		{

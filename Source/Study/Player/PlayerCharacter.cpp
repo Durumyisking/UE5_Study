@@ -1,5 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #include "PlayerCharacter.h"
 //#include "MyEnhancedInputComponent.generated.h"
@@ -36,7 +35,7 @@ APlayerCharacter::APlayerCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	// ÄÁÆ®·Ñ·¯(¸¶¿ì½º)¸¦ »ç¿ëÇÑ Ä³¸¯ÅÍÀÇ È¸ÀüÀ» ¸·½À´Ï´Ù.
+	// ì»¨íŠ¸ë¡¤ëŸ¬(ë§ˆìš°ìŠ¤)ë¥¼ ì‚¬ìš©í•œ ìºë¦­í„°ì˜ íšŒì „ì„ ë§‰ìŠµë‹ˆë‹¤.
 	bUseControllerRotationPitch = false;
 	//bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
@@ -68,10 +67,10 @@ void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ÇÃ·¹ÀÌ¾î ÄÁÆ®·Ñ·¯ È¹µæ
+	// í”Œë ˆì´ì–´ ì»¨íŠ¸ë¡¤ëŸ¬ íšë“
 	if (auto playerController = Cast<APlayerController>(GetController()))
 	{
-		// LocalPlayerÀÇ Çâ»óµÈÀÔ·Â ¾ò±â
+		// LocalPlayerì˜ í–¥ìƒëœì…ë ¥ ì–»ê¸°
 		if (auto eiSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(playerController->GetLocalPlayer()))
 		{
 			eiSubsystem->AddMappingContext(mInputMappingContext, 0);
@@ -143,7 +142,7 @@ void APlayerCharacter::BindActions(UInputComponent* PlayerInputComponent)
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("'%s' EnhancedComponent ÃÊ±âÈ­ ½ÇÆĞ!"), *GetNameSafe(this));
+		UE_LOG(LogTemp, Error, TEXT("'%s' EnhancedComponent ì´ˆê¸°í™” ì‹¤íŒ¨!"), *GetNameSafe(this));
 	}
 }
 
@@ -288,7 +287,7 @@ void APlayerCharacter::Shoot(const FInputActionValue& value)
 	{
 		if(!mState[static_cast<UINT>(EPlayerState::Run)])
 		{
-			// ÁÜ Start ¸ùÅ¸ÁÖ Àç»ıÁßÀÌ¸é
+			// ì¤Œ Start ëª½íƒ€ì£¼ ì¬ìƒì¤‘ì´ë©´
 			if (!mAniminstance->Montage_IsPlaying(mUpperBodyMontageMap["ZoomStart"]))
 			{
 				mAniminstance->PlayMontage(mUpperBodyMontageMap["Shoot"]);

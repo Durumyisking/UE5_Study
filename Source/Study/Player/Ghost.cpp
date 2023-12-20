@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "Ghost.h"
@@ -24,10 +24,10 @@ AGhost::AGhost()
 	}
 
 
-	// FObjectFinder, ClassFinder´Â »ı¼ºÀÚ¿¡¼­¸¸ »ç¿ëÀÌ °¡´ÉÇÏ´Ù.
-	// ClassFinder·Î ÇÏ¸é ¾ÆÁ÷ Class·Î Instance¸¦ »ı¼º ¾ÈÇÑ°Å (ÀÌµû ½á¼­ ÀÎ½ºÅÏ½º ¸¸µé¶ó°í ÀÌ¾ß±â ÇØ³õ´Â°Å)												Å¬·¡½º´Â_C ºÙ¿©¾ßÇØ!
+	// FObjectFinder, ClassFinderëŠ” ìƒì„±ìì—ì„œë§Œ ì‚¬ìš©ì´ ê°€ëŠ¥í•˜ë‹¤.
+	// ClassFinderë¡œ í•˜ë©´ ì•„ì§ Classë¡œ Instanceë¥¼ ìƒì„± ì•ˆí•œê±° (ì´ë”° ì¨ì„œ ì¸ìŠ¤í„´ìŠ¤ ë§Œë“¤ë¼ê³  ì´ì•¼ê¸° í•´ë†“ëŠ”ê±°)												í´ë˜ìŠ¤ëŠ”_C ë¶™ì—¬ì•¼í•´!
 	static ConstructorHelpers::FClassFinder<UAnimInstance> AnimAsset(TEXT("/Script/Engine.AnimBlueprint'/Game/MyContents/Animation/Player/BPGhostAnim.BPGhostAnim_C'"));
-	// ¸ğµç GhostµéÀÌ ÀÌ ¿¡¼ÂÀ» °øÀ¯ÇØ¼­ »ç¿ëÇÏµµ·Ï static ºÙÀÓ
+	// ëª¨ë“  Ghostë“¤ì´ ì´ ì—ì…‹ì„ ê³µìœ í•´ì„œ ì‚¬ìš©í•˜ë„ë¡ static ë¶™ì„
 
 	if (AnimAsset.Succeeded())
 	{

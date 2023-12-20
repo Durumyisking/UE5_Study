@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+﻿// Copyright Epic Games, Inc. All Rights Reserved.
 
 using UnrealBuildTool;
 
@@ -23,3 +23,4 @@ public class Study : ModuleRules
         // To include OnlineSubsystemSteam, add it to the plugins section in your uproject file with the Enabled attribute set to true
     }
 }
+

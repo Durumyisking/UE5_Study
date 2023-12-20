@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -14,6 +14,8 @@ UCLASS()
 class STUDY_API UMainWidget : public UUserWidget
 {
 	GENERATED_BODY()
+public:
+	UCrossHairWidget* GetCrosshairWidget() { return mCrosshairWidget; }
 
 protected:
 	virtual void NativePreConstruct();
@@ -22,10 +24,9 @@ protected:
 
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime);
 
-public:
-	UCrossHairWidget* GetCrosshairWidget() { return mCrosshairWidget; }
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crosshair", meta = (AllowPrivateAccess = "true"))
 	UCrossHairWidget* mCrosshairWidget;
 };
+

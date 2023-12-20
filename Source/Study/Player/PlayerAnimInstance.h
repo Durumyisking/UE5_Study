@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -61,7 +61,8 @@ private:
 	EMoveDir mMoveDir;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	bool mbZooming;
+	uint8 mbZooming:1;
 
 
 };
+

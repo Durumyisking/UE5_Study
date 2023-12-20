@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -17,54 +17,6 @@ public:
 	// Sets default values for this character's properties
 	APlayerCharacter();
 
-protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	UCameraComponent* mCamera;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	USpringArmComponent* mSpringArm;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
-	class UInputMappingContext* mInputMappingContext;
-
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
-	class UInputAction* mAction_Idle;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category ="Enhanced Input", meta = (AllowPrivateAccess = "true"))
-	UInputAction* mAction_MoveForward;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
-	UInputAction* mAction_MoveBack;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
-	UInputAction* mAction_MoveSide;
-
-
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
-	UInputAction* mAction_Jump;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
-	UInputAction* mAction_Run;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
-	UInputAction* mAction_Rotate;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
-	UInputAction* mAction_Shoot;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
-	UInputAction* mAction_Zoom;
-
-	// Montage
-	class UPlayerAnimInstance* mAniminstance;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	TMap<FString, UAnimMontage*> mUpperBodyMontageMap;
-
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -72,7 +24,7 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	void SetAnimInstance(UPlayerAnimInstance* animInstance) { mAniminstance = animInstance; }
+	void SetAnimInstance(class UPlayerAnimInstance* animInstance) { mAniminstance = animInstance; }
 
 	// Actions
 	void BindActions(UInputComponent* PlayerInputComponent);
@@ -122,6 +74,53 @@ public:
 
 	bool IsShooting() const { return mState[static_cast<UINT>(EPlayerAnimState::Shoot)]; }
 
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UCameraComponent* mCamera;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	USpringArmComponent* mSpringArm;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
+	class UInputMappingContext* mInputMappingContext;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
+	class UInputAction* mAction_Idle;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
+	UInputAction* mAction_MoveForward;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
+	UInputAction* mAction_MoveBack;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
+	UInputAction* mAction_MoveSide;
+
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
+	UInputAction* mAction_Jump;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
+	UInputAction* mAction_Run;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
+	UInputAction* mAction_Rotate;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
+	UInputAction* mAction_Shoot;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enhanced Input", meta = (AllowPrivateAccess = "true"))
+	UInputAction* mAction_Zoom;
+
+	// Montage
+	UPlayerAnimInstance* mAniminstance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	TMap<FString, UAnimMontage*> mUpperBodyMontageMap;
+
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "MainWidget", Meta = (AllowPrivateAccess = "true"))
 	UMainWidget* mMainWidget;
@@ -136,6 +135,5 @@ private:
 
 	std::bitset< static_cast<UINT>(EPlayerState::End)> mState;
 	std::bitset< static_cast<UINT>(EMoveDir::End)> mMoveDir;
-
 
 };

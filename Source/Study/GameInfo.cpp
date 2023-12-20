@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "GameInfo.h"
@@ -16,6 +16,7 @@ GameInfo::~GameInfo()
 void PrintViewport(float duration, const FColor& color, const FString& strText)
 {
 	// GEngine : global engine pointer
-	// ºäÆ÷Æ®¿¡ ¸Þ½ÃÁö Ãâ·ÂÇÏ´Â ÇÔ¼ö
+	// ë·°í¬íŠ¸ì— ë©”ì‹œì§€ ì¶œë ¥í•˜ëŠ” í•¨ìˆ˜
 	GEngine->AddOnScreenDebugMessage(-1, duration, color, strText);
 }
+
